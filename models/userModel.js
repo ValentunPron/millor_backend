@@ -85,4 +85,25 @@ userShema.statics.register = async function(fullName, email, tel, password) {
 	return user;
 }
 
+userShema.statics.login = async function(email, password) {
+
+	if (!email || !password) {
+		throw Error('Всі поля повинні бути заповнені!');
+	}
+
+	const user = await this.findOne({email});
+
+	if(!user) {
+		throw Error('Неправильна електронна почта');
+	}
+
+	const match = await bcrypt.compare(password, user.password);
+
+	if(!match) {
+		throw Error('Неправильна почта або пароль');
+	}
+
+	return user
+}
+
 export default mongoose.model('User', userShema);
